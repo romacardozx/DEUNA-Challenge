@@ -9,11 +9,10 @@ services:
       - "8080:8080"
     environment:
       - DATABASE_URL=postgres://user:password@db:5432/deuna_challenge?sslmode=disable
+      - SERVER_ADDRESS=:8080
+      - MIGRATIONS_PATH=/root/migrations
     depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - deuna-network
+      - db
 
   db:
     image: postgres:13
@@ -23,17 +22,6 @@ services:
       - POSTGRES_DB=deuna_challenge
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d deuna_challenge"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - deuna-network
 
 volumes:
   postgres_data:
-
-networks:
-  deuna-network:
-    driver: bridge

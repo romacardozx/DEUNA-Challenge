@@ -4,18 +4,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/romacardozx/DEUNA-Challenge/internal/database"
+	"github.com/romacardozx/DEUNA-Challenge/internal/core/services"
 )
 
-func CreateRefund(db *database.Database) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message":   "Refund created successfully",
-			"refundId":  "mock-refund-id-123",
-			"paymentId": "mock-payment-id-123",
-			"amount":    50.00,
-			"currency":  "USD",
-			"status":    "processed",
-		})
+func CreateRefund(c *gin.Context) {
+	// Aquí iría la lógica para extraer datos de la solicitud
+	// Por ejemplo:
+	// var refundRequest RefundRequest
+	// if err := c.ShouldBindJSON(&refundRequest); err != nil {
+	//     c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//     return
+	// }
+
+	// Llamada al servicio
+	refund, err := services.CreateRefund("", 0, "")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
+
+	c.JSON(http.StatusOK, refund)
 }

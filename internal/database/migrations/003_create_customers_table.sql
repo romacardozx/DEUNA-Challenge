@@ -1,14 +1,12 @@
-CREATE TABLE IF NOT EXISTS merchants (
+CREATE TABLE IF NOT EXISTS customers (
     id VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(20),
     address TEXT,
-    business_type VARCHAR(100),
-    tax_id VARCHAR(50),
-    bank_account_info TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_merchants_email ON merchants(email);
+CREATE INDEX idx_customers_email ON customers(email);

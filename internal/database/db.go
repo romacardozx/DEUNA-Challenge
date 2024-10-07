@@ -12,7 +12,7 @@ type Database struct {
 	*sql.DB
 }
 
-func NewDatabase(dataSourceName string) (*Database, error) {
+func Init(dataSourceName string) (*Database, error) {
 	var db *sql.DB
 	var err error
 

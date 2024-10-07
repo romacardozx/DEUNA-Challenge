@@ -9,24 +9,14 @@ import (
 func SetupRoutes(router *gin.Engine, db *database.Database) {
 	router.GET("/health", healthCheck)
 
-	apiV1 := router.Group("/api/v1")
+	api := router.Group("/api/v1")
 	{
-		payments := apiV1.Group("/payments")
-		{
-			payments.POST("", v1.CreatePayment(db))
-			payments.GET("/:id", v1.GetPayment(db))
-		}
-
-		refunds := apiV1.Group("/refunds")
-		{
-			refunds.POST("", v1.CreateRefund(db))
-		}
-
-		merchants := apiV1.Group("/merchants")
-		{
-			merchants.GET("/:id/payments", v1.GetMerchantPayments(db))
-		}
+		api.POST("/payments", v1.CreatePayment)
+		api.GET("/payments/:id", v1.GetPayment)
+		api.POST("/refunds", v1.CreateRefund)
+		api.GET("/merchants/:id/payments", v1.GetMerchantPayments)
 	}
+
 }
 
 func healthCheck(c *gin.Context) {
