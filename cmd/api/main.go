@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/romacardozx/online-payment-platform/internal/app"
+	"github.com/romacardozx/DEUNA-Challenge/internal/app"
 )
 
 func main() {

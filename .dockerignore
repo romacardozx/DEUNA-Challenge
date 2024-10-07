@@ -1,0 +1,43 @@
+# Archivos de control de versiones
+.git
+.gitignore
+
+# Archivos y directorios de Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Directorios y archivos específicos de desarrollo
+/tmp
+*.md
+*.log
+
+# Archivos de configuración de IDE
+.vscode
+.idea
+
+# Archivos binarios y de compilación
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+DEUNA-Challenge
+
+# Archivos de prueba
+*_test.go
+*.test
+
+# Archivos de sistema operativo
+.DS_Store
+*.swp
+*.swo
+
+# Archivos de configuración local
+*.env
+.env.local
+
+# Otros archivos y directorios que no son necesarios en la imagen Docker
+/docs
+/tests
+README.md

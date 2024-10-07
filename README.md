@@ -67,7 +67,6 @@ DEUNA-CHALLENGE/
 │       │   └── stack.yaml          # Template de CloudFormation para infraestructura AWS
 │       └── terraform/
 │           └── main.tf             # Configuración de Terraform (alternativa a CloudFormation)
-├── .air.toml                       # Configuración de Air para recarga en caliente
 ├── .dockerignore
 ├── go.mod
 ├── go.sum
