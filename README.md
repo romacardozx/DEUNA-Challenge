@@ -3,7 +3,7 @@
 #### Online Payment Platform
 * This project aims to develop an online payment platform, which will be an API-based application enabling e-commerce businesses to securely and seamlessly process transactions.
 
-## Initial proposal for project structure
+## New proposal for project structure with Cloud
 ```sh
 DEUNA-CHALLENGE/
 ├── cmd/
@@ -35,11 +35,22 @@ DEUNA-CHALLENGE/
 │   │   │   ├── auth.go             # Middleware de autenticación
 │   │   │   └── logging.go          # Middleware de logging
 │   │   └── routes.go               # Definición de rutas de la API
-│   └── database/
-│       ├── migrations/
-│       │   ├── 001_create_payments_table.sql
-│       │   └── 002_create_merchants_table.sql
-│       └── db.go                   # Configuración y conexión a la base de datos
+│   ├── database/
+│   │   ├── migrations/
+│   │   │   ├── 001_create_payments_table.sql
+│   │   │   └── 002_create_merchants_table.sql
+│   │   └── db.go                   # Configuración y conexión a la base de datos
+│   └── cloud/
+│       ├── aws/
+│       │   ├── dynamodb/
+│       │   │   └── repository.go   # Implementación de repositorio con DynamoDB
+│       │   ├── lambda/
+│       │   │   └── handler.go      # Adaptador para AWS Lambda
+│       │   └── sqs/
+│       │       └── queue.go        # Implementación de cola con SQS
+│       └── interfaces/
+│           ├── database.go         # Interfaces para abstracción de base de datos
+│           └── queue.go            # Interfaces para abstracción de cola
 ├── pkg/
 │   ├── logger/
 │   │   └── logger.go               # Implementación de logging personalizado
@@ -47,7 +58,17 @@ DEUNA-CHALLENGE/
 │       └── errors.go               # Manejo de errores personalizado
 ├── config/
 │   └── config.go                   # Configuraciones de la aplicación
+├── deployments/
+│   ├── docker/
+│   │   ├── Dockerfile
+│   │   └── docker-compose.yml
+│   └── aws/
+│       ├── cloudformation/
+│       │   └── stack.yaml          # Template de CloudFormation para infraestructura AWS
+│       └── terraform/
+│           └── main.tf             # Configuración de Terraform (alternativa a CloudFormation)
 ├── .air.toml                       # Configuración de Air para recarga en caliente
+├── .dockerignore
 ├── go.mod
 ├── go.sum
 └── README.md
