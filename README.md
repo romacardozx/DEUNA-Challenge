@@ -20,12 +20,19 @@ go mod vendor
 ```sh
 make build
 ```
+
 This will build the Docker images and start the containers.
 
 ## Stopping the Application
 To stop the application and services, press ```Ctrl+C``` in the terminal where docker-compose up is running. Then, run the following command to stop and remove the containers:
 ```sh
 make down
+```
+
+## Run Tests
+If you want to run test use the following command to execute it:
+```sh
+make test
 ```
 
 
