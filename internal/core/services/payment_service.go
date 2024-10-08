@@ -32,12 +32,15 @@ func NewPaymentService(paymentRepo repositories.PaymentRepository, bankSimulator
 func (s *paymentService) ProcessPayment(c *gin.Context, paymentPayload *models.PaymentPayload) (*models.Payment, error) {
 	log := models.AuditData{}
 	payment := models.Payment{
-		CustomerID:  paymentPayload.CustomerID,
-		MerchantID:  paymentPayload.MerchantID,
-		Amount:      paymentPayload.Amount,
-		Currency:    paymentPayload.Currency,
-		Description: paymentPayload.Description,
-		CreatedAt:   time.Now(),
+		CustomerID:     paymentPayload.CustomerID,
+		MerchantID:     paymentPayload.MerchantID,
+		Amount:         paymentPayload.Amount,
+		Currency:       paymentPayload.Currency,
+		CardNumber:     "1234567890123456",
+		CVV:            "123",
+		ExpirationDate: time.Now().AddDate(3, 0, 0),
+		Description:    paymentPayload.Description,
+		CreatedAt:      time.Now(),
 	}
 	payment.ID = uuid.New()
 	bankResponse, err := s.bankSimulator.SimulatePaymentProcessing(&payment)
