@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 const (
 	PaymentStatusPending   string = "pending"
@@ -10,7 +14,7 @@ const (
 )
 
 type Payment struct {
-	ID            string    `json:"id"`
+	ID            uuid.UUID `json:"id"`
 	CustomerID    string    `json:"customer_id"`
 	MerchantID    string    `json:"merchant_id"`
 	Amount        float64   `json:"amount"`
@@ -20,4 +24,12 @@ type Payment struct {
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 	TransactionID string    `json:"transaction_id"`
+}
+
+type PaymentPayload struct {
+	CustomerID  string  `json:"customer_id"`
+	MerchantID  string  `json:"merchant_id"`
+	Amount      float64 `json:"amount"`
+	Currency    string  `json:"currency"`
+	Description string  `json:"description"`
 }

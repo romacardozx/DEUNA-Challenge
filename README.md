@@ -23,6 +23,11 @@ make build
 
 This will build the Docker images and start the containers.
 
+4. if you have already done the build you can use the following command to run the app
+```sh
+make run
+```
+
 ## Stopping the Application
 To stop the application and services, press ```Ctrl+C``` in the terminal where docker-compose up is running. Then, run the following command to stop and remove the containers:
 ```sh
@@ -62,6 +67,12 @@ make test
 * Parameters:
 ```c
     merchantId: Merchant ID //MerchantsIDs: (Merchant 1: m1) and (Merchant 2: m2) defined in init.sql migration.
+```
+* QueryParams:
+```c
+    // If you want you can use it, otherwise the api has a default limit 10 and offset 0.
+    limit: 20 //OPTIONAL
+    offset: 0 //OPTIONAL
 ```
 
 ### Refund Routes
