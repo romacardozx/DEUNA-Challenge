@@ -2,15 +2,18 @@ package services
 
 import (
 	"errors"
+	"time"
 
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/romacardozx/DEUNA-Challenge/internal/core/models"
 	"github.com/romacardozx/DEUNA-Challenge/internal/core/repositories"
+	"github.com/romacardozx/DEUNA-Challenge/pkg/audit"
 )
 
 type RefundService interface {
-	ProcessRefund(refund *models.Refund) (*models.Refund, error)
-	GetRefundDetails(refundID string) (*models.Refund, error)
-	ListPaymentRefunds(paymentID string) ([]*models.Refund, error)
+	ProcessRefund(c *gin.Context, payload *models.RefundPayload) (*models.Refund, error)
+	GetRefundDetails(c *gin.Context, refundID string) (*models.Refund, error)
 }
 
 type refundService struct {
@@ -27,43 +30,55 @@ func NewRefundService(refundRepo repositories.RefundRepository, paymentRepo repo
 	}
 }
 
-func (s *refundService) ProcessRefund(refund *models.Refund) (*models.Refund, error) {
+func (s *refundService) ProcessRefund(c *gin.Context, payload *models.RefundPayload) (*models.Refund, error) {
+	log := models.AuditData{}
+	refund := models.Refund{
+		ID:        uuid.New(),
+		PaymentID: payload.PaymentID,
+		Reason:    payload.Reason,
+		CreatedAt: time.Now(),
+	}
 	payment, err := s.paymentRepository.GetByID(refund.PaymentID)
 	if err != nil {
 		return nil, err
 	}
-	if payment.Status != "approved" {
-		return nil, errors.New("payment cannot be refunded")
-	}
+	refund.Amount = payment.Amount
+	refund.Currency = payment.Currency
 
-	if refund.Amount > payment.Amount {
-		return nil, errors.New("refund amount exceeds payment amount")
-	}
-
-	bankResponse, err := s.bankSimulator.SimulateRefundProcessing(refund)
+	bankResponse, err := s.bankSimulator.SimulateRefundProcessing(&refund)
 	if err != nil {
 		return nil, err
-	}
-
-	if bankResponse.Approved {
-		refund.Status = "approved"
-	} else {
-		refund.Status = "declined"
 	}
 	refund.TransactionID = bankResponse.TransactionID
 
-	err = s.refundRepository.Create(refund)
-	if err != nil {
+	if bankResponse.Approved {
+		refund.Status = "refunded"
+
+		log.CompleteRefundLog(refund, *bankResponse, payment.MerchantID, payment.CustomerID)
+
+		if err := audit.LogAudit(c, log); err != nil {
+			return nil, err
+		}
+
+		err = s.refundRepository.Create(&refund)
+		if err != nil {
+			return nil, err
+		}
+
+		return &refund, nil
+
+	}
+	refund.Status = "declined"
+
+	log.CompleteRefundLog(refund, *bankResponse, payment.MerchantID, payment.CustomerID)
+
+	if err := audit.LogAudit(c, log); err != nil {
 		return nil, err
 	}
 
-	return refund, nil
+	return nil, errors.New("the refund was rejected")
 }
 
-func (s *refundService) GetRefundDetails(refundID string) (*models.Refund, error) {
+func (s *refundService) GetRefundDetails(c *gin.Context, refundID string) (*models.Refund, error) {
 	return s.refundRepository.GetByID(refundID)
-}
-
-func (s *refundService) ListPaymentRefunds(paymentID string) ([]*models.Refund, error) {
-	return s.refundRepository.ListByPayment(paymentID)
 }

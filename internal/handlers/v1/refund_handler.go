@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,15 +20,16 @@ func NewRefundHandler(refundService services.RefundService) *RefundHandler {
 }
 
 func (h *RefundHandler) ProcessRefund(c *gin.Context) {
-	var refund models.Refund
-	if err := c.ShouldBindJSON(&refund); err != nil {
+	var refundPayload models.RefundPayload
+	if err := c.ShouldBindJSON(&refundPayload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println("Refund Payload: ", refundPayload)
 
-	processedRefund, err := h.refundService.ProcessRefund(&refund)
+	processedRefund, err := h.refundService.ProcessRefund(c, &refundPayload)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process refund"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -37,23 +39,11 @@ func (h *RefundHandler) ProcessRefund(c *gin.Context) {
 func (h *RefundHandler) GetRefundDetails(c *gin.Context) {
 	refundID := c.Param("id")
 
-	refund, err := h.refundService.GetRefundDetails(refundID)
+	refund, err := h.refundService.GetRefundDetails(c, refundID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Refund not found"})
 		return
 	}
 
 	c.JSON(http.StatusOK, refund)
-}
-
-func (h *RefundHandler) ListPaymentRefunds(c *gin.Context) {
-	paymentID := c.Param("paymentId")
-
-	refunds, err := h.refundService.ListPaymentRefunds(paymentID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve refunds"})
-		return
-	}
-
-	c.JSON(http.StatusOK, refunds)
 }

@@ -21,7 +21,6 @@ func SetupRoutes(router *gin.Engine, paymentHandler *v1.PaymentHandler, refundHa
 		// Refund routes
 		auth.POST("/refund", refundHandler.ProcessRefund)
 		auth.GET("/refund/details/:refundId", refundHandler.GetRefundDetails)
-		auth.GET("/payment/:paymentId/refunds", refundHandler.ListPaymentRefunds)
 	}
 
 }

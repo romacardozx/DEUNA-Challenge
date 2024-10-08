@@ -85,3 +85,46 @@ CREATE TABLE IF NOT EXISTS merchant_tokens (
 INSERT INTO merchant_tokens (merchant_id, token) VALUES
 ('m1', 'token1'),
 ('m2', 'token2');
+
+-- Crear tabla de auditoría
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id SERIAL PRIMARY KEY,
+    payment_id VARCHAR(36),
+    amount DECIMAL(10, 2),
+    merchant_id VARCHAR(36),
+    customer_id VARCHAR(36),
+    currency VARCHAR(3),
+    transaction_id VARCHAR(100),
+    status VARCHAR(20),
+    message TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear índices para la tabla de auditoría
+CREATE INDEX idx_audit_logs_payment_id ON audit_logs(payment_id);
+CREATE INDEX idx_audit_logs_merchant_id ON audit_logs(merchant_id);
+CREATE INDEX idx_audit_logs_customer_id ON audit_logs(customer_id);
+CREATE INDEX idx_audit_logs_status ON audit_logs(status);
+CREATE INDEX idx_audit_logs_created_at ON audit_logs(created_at);
+
+-- Crear función para insertar logs de auditoría
+CREATE OR REPLACE FUNCTION insert_audit_log(
+    p_payment_id VARCHAR(36),
+    p_amount DECIMAL(10, 2),
+    p_merchant_id VARCHAR(36),
+    p_customer_id VARCHAR(36),
+    p_currency VARCHAR(3),
+    p_transaction_id VARCHAR(100),
+    p_status VARCHAR(20),
+    p_message TEXT
+) RETURNS VOID AS $$
+BEGIN
+    INSERT INTO audit_logs (
+        payment_id, amount, merchant_id, customer_id, currency, 
+        transaction_id, status, message
+    ) VALUES (
+        p_payment_id, p_amount, p_merchant_id, p_customer_id, p_currency, 
+        p_transaction_id, p_status, p_message
+    );
+END;
+$$ LANGUAGE plpgsql;

@@ -22,7 +22,7 @@ func NewBankSimulatorService() BankSimulatorService {
 func (bs *bankSimulator) SimulatePaymentProcessing(payment *models.Payment) (*models.BankResponse, error) {
 	time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
 
-	approved := rand.Float32() < 0.8
+	approved := rand.Float32() < 0.5
 
 	response := &models.BankResponse{
 		TransactionID: generateTransactionID(),
@@ -36,7 +36,7 @@ func (bs *bankSimulator) SimulatePaymentProcessing(payment *models.Payment) (*mo
 func (bs *bankSimulator) SimulateRefundProcessing(refund *models.Refund) (*models.BankResponse, error) {
 	time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
 
-	approved := rand.Float32() < 0.95
+	approved := rand.Float32() < 0.8
 
 	response := &models.BankResponse{
 		TransactionID: generateTransactionID(),

@@ -20,15 +20,15 @@ func NewPaymentHandler(paymentService services.PaymentService) *PaymentHandler {
 }
 
 func (controller *PaymentHandler) ProcessPayment(c *gin.Context) {
-	var payment models.Payment
-	if err := c.ShouldBindJSON(&payment); err != nil {
+	var paymentPayload models.PaymentPayload
+	if err := c.ShouldBindJSON(&paymentPayload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "binding: " + err.Error()})
 		return
 	}
 
-	processedPayment, err := controller.paymentService.ProcessPayment(&payment)
+	processedPayment, err := controller.paymentService.ProcessPayment(c, &paymentPayload)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process payment"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -38,7 +38,7 @@ func (controller *PaymentHandler) ProcessPayment(c *gin.Context) {
 func (controller *PaymentHandler) GetPaymentDetails(c *gin.Context) {
 	paymentID := c.Param("id")
 
-	payment, err := controller.paymentService.GetPaymentDetails(paymentID)
+	payment, err := controller.paymentService.GetPaymentDetails(c, paymentID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Payment not found"})
 		return
@@ -52,7 +52,7 @@ func (controller *PaymentHandler) ListMerchantPayments(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
 
-	payments, err := controller.paymentService.ListMerchantPayments(merchantID, limit, offset)
+	payments, err := controller.paymentService.ListMerchantPayments(c, merchantID, limit, offset)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve payments"})
 		return
