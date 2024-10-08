@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 )
 
@@ -10,10 +11,13 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
-	return &Config{
-		DatabaseURL:   getEnv("DATABASE_URL", "postgresql://user:password@localhost:5432/deuna_challenge?sslmode=disable"),
+	cfg := &Config{
+		DatabaseURL:   getEnv("DATABASE_URL", "postgres://user:password@db:5432/deuna_challenge?sslmode=disable"),
 		ServerAddress: getEnv("SERVER_ADDRESS", ":8080"),
-	}, nil
+	}
+
+	log.Printf("Loaded config: %+v", cfg)
+	return cfg, nil
 }
 
 func getEnv(key, fallback string) string {

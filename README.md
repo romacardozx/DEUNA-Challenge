@@ -3,71 +3,54 @@
 #### Online Payment Platform
 * This project aims to develop an online payment platform, which will be an API-based application enabling e-commerce businesses to securely and seamlessly process transactions.
 
-## New proposal for project structure with Cloud
+## Project Structure
 ```sh
 DEUNA-CHALLENGE/
 ├── cmd/
 │   └── api/
-│       └── main.go                 # Punto de entrada principal de la aplicación
+│       └── main.go
 ├── internal/
 │   ├── app/
-│   │   └── app.go                  # Configuración y inicialización de la aplicación
+│   │   └── app.go
 │   ├── core/
 │   │   ├── models/
-│   │   │   ├── payment.go          # Definición de la entidad Payment
-│   │   │   ├── merchant.go         # Definición de la entidad Merchant
-│   │   │   └── customer.go         # Definición de la entidad Customer
+│   │   │   ├── payment.go
+│   │   │   ├── merchant.go
+│   │   │   ├── bank.go
+│   │   │   ├── refund.go
+│   │   │   └── customer.go
 │   │   ├── repositories/
-│   │   │   ├── payment_repo.go     # Interfaz del repositorio de Payment
-│   │   │   └── merchant_repo.go    # Interfaz del repositorio de Merchant
-│   │   ├── services/
-│   │   │   ├── payment_service.go  # Lógica de negocio para pagos
-│   │   │   ├── refund_service.go   # Lógica de negocio para reembolsos
-│   │   │   └── bank_simulator.go   # Simulador del banco
-│   │   └── queries/
-│   │       ├── payment_queries.go  # Consultas SQL complejas para pagos
-│   │       └── merchant_queries.go # Consultas SQL complejas para comerciantes
+│   │   │   ├── payment_repo.go
+│   │   │   └── merchant_repo.go
+│   │   └── services/
+│   │       ├── payment_service.go
+│   │       ├── refund_service.go
+│   │       ├── bank_simulator.go
+│   │       └── bank_simulator_test.go
 │   ├── handlers/
 │   │   ├── v1/
-│   │   │   ├── payment_handler.go  # Manejador HTTP para pagos
-│   │   │   └── refund_handler.go   # Manejador HTTP para reembolsos
+│   │   │   ├── payment_handler.go
+│   │   │   └── refund_handler.go
 │   │   ├── middleware/
-│   │   │   ├── auth.go             # Middleware de autenticación
-│   │   │   └── logging.go          # Middleware de logging
-│   │   └── routes.go               # Definición de rutas de la API
-│   ├── database/
-│   │   ├── migrations/
-│   │   │   ├── 001_create_payments_table.sql
-│   │   │   └── 002_create_merchants_table.sql
-│   │   └── db.go                   # Configuración y conexión a la base de datos
-│   └── cloud/
-│       ├── aws/
-│       │   ├── dynamodb/
-│       │   │   └── repository.go   # Implementación de repositorio con DynamoDB
-│       │   ├── lambda/
-│       │   │   └── handler.go      # Adaptador para AWS Lambda
-│       │   └── sqs/
-│       │       └── queue.go        # Implementación de cola con SQS
-│       └── interfaces/
-│           ├── database.go         # Interfaces para abstracción de base de datos
-│           └── queue.go            # Interfaces para abstracción de cola
+│   │   │   ├── auth.go
+│   │   │   └── logging.go
+│   │   └── routes.go
+│   └── database/
+│       └── db.go
 ├── pkg/
 │   ├── logger/
-│   │   └── logger.go               # Implementación de logging personalizado
+│   │   └── logger.go
 │   └── errors/
-│       └── errors.go               # Manejo de errores personalizado
+│       └── errors.go
 ├── config/
-│   └── config.go                   # Configuraciones de la aplicación
+│   └── config.go
 ├── deployments/
-│   ├── docker/
-│   │   ├── Dockerfile
-│   │   └── docker-compose.yml
-│   └── aws/
-│       ├── cloudformation/
-│       │   └── stack.yaml          # Template de CloudFormation para infraestructura AWS
-│       └── terraform/
-│           └── main.tf             # Configuración de Terraform (alternativa a CloudFormation)
+│   └── docker/
+│       ├── init.sql
+│       ├── Dockerfile
+│       └── docker-compose.yml
 ├── .dockerignore
+├── .gitignore
 ├── go.mod
 ├── go.sum
 └── README.md
