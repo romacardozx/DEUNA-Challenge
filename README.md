@@ -91,11 +91,6 @@ make test
 ```sh
     * refundId: Refund ID
 ```
-#### GET /api/v1/payment/:paymentId/refunds: List refunds for a payment
-* Parameters:
-```sh
-    * paymentId: Payment ID
-```
 #### Note: All routes are protected by the AuthMiddleware().
 * Header: 
 ```c
