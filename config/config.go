@@ -11,6 +11,7 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
+
 	cfg := &Config{
 		DatabaseURL:   getEnv("DATABASE_URL", "postgres://user:password@db:5432/deuna_challenge?sslmode=disable"),
 		ServerAddress: getEnv("SERVER_ADDRESS", ":8080"),
