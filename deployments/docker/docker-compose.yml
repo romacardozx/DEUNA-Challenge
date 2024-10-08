@@ -10,7 +10,6 @@ services:
     environment:
       - DATABASE_URL=postgres://user:password@db:5432/deuna_challenge?sslmode=disable
       - SERVER_ADDRESS=:8080
-      - MIGRATIONS_PATH=/root/migrations
     depends_on:
       - db
 
@@ -22,6 +21,9 @@ services:
       - POSTGRES_DB=deuna_challenge
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:
