@@ -6,16 +6,14 @@ import (
 )
 
 type Config struct {
-	DatabaseURL    string
-	ServerAddress  string
-	MigrationsPath string
+	DatabaseURL   string
+	ServerAddress string
 }
 
 func Load() (*Config, error) {
 	cfg := &Config{
-		DatabaseURL:    getEnv("DATABASE_URL", "postgres://user:password@db:5432/deuna_challenge?sslmode=disable"),
-		ServerAddress:  getEnv("SERVER_ADDRESS", ":8080"),
-		MigrationsPath: getEnv("MIGRATIONS_PATH", "/root/migrations"),
+		DatabaseURL:   getEnv("DATABASE_URL", "postgres://user:password@db:5432/deuna_challenge?sslmode=disable"),
+		ServerAddress: getEnv("SERVER_ADDRESS", ":8080"),
 	}
 
 	log.Printf("Loaded config: %+v", cfg)
