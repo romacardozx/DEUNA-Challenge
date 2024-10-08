@@ -49,7 +49,7 @@ make test
 * Request Body:
 ```sh
     {
-    "customer_id": "c1",
+    "Customer_id": "c1",
     "merchant_id": "m1",
     "amount": 110.50,
     "currency": "USD",
@@ -81,8 +81,8 @@ make test
 * Request Body:
 ```sh
     {
-        "payment_id": "string", 
-        "reason": "string"
+        "PaymentID": "string", 
+        "Reason": "string"
     }
 ```
 
