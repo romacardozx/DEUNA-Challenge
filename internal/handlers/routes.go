@@ -2,19 +2,26 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/romacardozx/DEUNA-Challenge/internal/database"
+	"github.com/romacardozx/DEUNA-Challenge/internal/handlers/middleware"
 	v1 "github.com/romacardozx/DEUNA-Challenge/internal/handlers/v1"
 )
 
-func SetupRoutes(router *gin.Engine, db *database.Database) {
+func SetupRoutes(router *gin.Engine, paymentHandler *v1.PaymentHandler, refundHandler *v1.RefundHandler) {
 	router.GET("/health", healthCheck)
 
 	api := router.Group("/api/v1")
 	{
-		api.POST("/payments", v1.CreatePayment)
-		api.GET("/payments/:id", v1.GetPayment)
-		api.POST("/refunds", v1.CreateRefund)
-		api.GET("/merchants/:id/payments", v1.GetMerchantPayments)
+		auth := api.Group("/")
+		auth.Use(middleware.AuthMiddleware())
+		// Payment routes
+		auth.POST("/payment", paymentHandler.ProcessPayment)
+		auth.GET("/payment/details/:id", paymentHandler.GetPaymentDetails)
+		auth.GET("/merchant/:merchantId/payments", paymentHandler.ListMerchantPayments)
+
+		// Refund routes
+		auth.POST("/refund", refundHandler.ProcessRefund)
+		auth.GET("/refund/details/:refundId", refundHandler.GetRefundDetails)
+		auth.GET("/payment/:paymentId/refunds", refundHandler.ListPaymentRefunds)
 	}
 
 }

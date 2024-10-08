@@ -1,16 +1,44 @@
 package services
 
 import (
+	"time"
+
 	"github.com/romacardozx/DEUNA-Challenge/internal/core/models"
 	"github.com/romacardozx/DEUNA-Challenge/internal/core/repositories"
 )
 
-func CreatePayment( /* parámetros necesarios */ ) (*models.Payment, error) {
-	// Lógica de negocio aquí
-	// ...
+type PaymentService interface {
+	ProcessPayment(payment *models.Payment) (*models.Payment, error)
+	GetPaymentDetails(paymentID string) (*models.Payment, error)
+	ListMerchantPayments(merchantID string, limit, offset int) ([]*models.Payment, error)
+}
 
-	// Llamada al repositorio
-	payment, err := repositories.CreatePayment( /* parámetros */ )
+type paymentService struct {
+	paymentRepo   repositories.PaymentRepository
+	bankSimulator BankSimulatorService
+}
+
+func NewPaymentService(paymentRepo repositories.PaymentRepository, bankSimulator BankSimulatorService) PaymentService {
+	return &paymentService{
+		paymentRepo:   paymentRepo,
+		bankSimulator: bankSimulator,
+	}
+}
+
+func (s *paymentService) ProcessPayment(payment *models.Payment) (*models.Payment, error) {
+	bankResponse, err := s.bankSimulator.SimulatePaymentProcessing(payment)
+	if err != nil {
+		return nil, err
+	}
+	if bankResponse.Approved {
+		payment.Status = "approved"
+	} else {
+		payment.Status = "declined"
+	}
+	payment.TransactionID = bankResponse.TransactionID
+	payment.CreatedAt = time.Now()
+
+	err = s.paymentRepo.Create(payment)
 	if err != nil {
 		return nil, err
 	}
@@ -18,10 +46,10 @@ func CreatePayment( /* parámetros necesarios */ ) (*models.Payment, error) {
 	return payment, nil
 }
 
-func GetPayment(id string) (*models.Payment, error) {
-	return repositories.GetPayment(id)
+func (s *paymentService) GetPaymentDetails(paymentID string) (*models.Payment, error) {
+	return s.paymentRepo.GetByID(paymentID)
 }
 
-func GetMerchantPayments(merchantID string) ([]*models.Payment, error) {
-	return repositories.GetMerchantPayments(merchantID)
+func (s *paymentService) ListMerchantPayments(merchantID string, limit, offset int) ([]*models.Payment, error) {
+	return s.paymentRepo.ListByMerchant(merchantID, limit, offset)
 }

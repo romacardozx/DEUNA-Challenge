@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"sync"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -11,6 +12,11 @@ import (
 type Database struct {
 	*sql.DB
 }
+
+var (
+	instance *Database
+	once     sync.Once
+)
 
 func Init(dataSourceName string) (*Database, error) {
 	var db *sql.DB
@@ -36,5 +42,13 @@ func Init(dataSourceName string) (*Database, error) {
 		return nil, fmt.Errorf("failed to connect to database after %d attempts: %w", maxRetries, err)
 	}
 
-	return &Database{DB: db}, nil
+	instance = &Database{DB: db}
+	return instance, nil
+}
+
+func GetDB() *Database {
+	if instance == nil {
+		panic("Database not initialized. Call Init first.")
+	}
+	return instance
 }

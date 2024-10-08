@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS payments (
     currency VARCHAR(3) NOT NULL,
     description TEXT,
     status VARCHAR(20) NOT NULL,
+    transaction_id VARCHAR(100),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(id),
@@ -62,3 +63,25 @@ CREATE TABLE IF NOT EXISTS refunds (
 
 CREATE INDEX idx_refunds_payment ON refunds(payment_id);
 CREATE INDEX idx_refunds_status ON refunds(status);
+
+
+-- Insert initial merchants
+INSERT INTO merchants (id, name, email, phone, business_type, tax_id) VALUES
+('m1', 'Merchant 1', 'merchant1@example.com', '1234567890', 'Retail', 'TAX123'),
+('m2', 'Merchant 2', 'merchant2@example.com', '0987654321', 'Online', 'TAX456');
+
+-- Insert initial customers
+INSERT INTO customers (id, first_name, last_name, email, phone) VALUES
+('c1', 'John', 'Doe', 'john@example.com', '1112223333'),
+('c2', 'Jane', 'Smith', 'jane@example.com', '4445556666');
+
+-- Insert merchant tokens (for basic auth)
+CREATE TABLE IF NOT EXISTS merchant_tokens (
+    merchant_id VARCHAR(36) PRIMARY KEY,
+    token VARCHAR(100) NOT NULL UNIQUE,
+    FOREIGN KEY (merchant_id) REFERENCES merchants(id)
+);
+
+INSERT INTO merchant_tokens (merchant_id, token) VALUES
+('m1', 'token1'),
+('m2', 'token2');

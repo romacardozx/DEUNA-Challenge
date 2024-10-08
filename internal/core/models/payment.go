@@ -12,13 +12,14 @@ const (
 )
 
 type Payment struct {
-	ID          string        `json:"id"`
-	CustomerID  string        `json:"customer_id"`
-	MerchantID  string        `json:"merchant_id"`
-	Amount      float64       `json:"amount"`
-	Currency    string        `json:"currency"`
-	Description string        `json:"description"`
-	Status      PaymentStatus `json:"status"`
-	CreatedAt   time.Time     `json:"created_at"`
-	UpdatedAt   time.Time     `json:"updated_at"`
+	ID            string        `json:"id"`
+	CustomerID    string        `json:"customer_id"`
+	MerchantID    string        `json:"merchant_id"`
+	Amount        float64       `json:"amount"`
+	Currency      string        `json:"currency"`
+	Description   string        `json:"description"`
+	Status        PaymentStatus `json:"status"`
+	CreatedAt     time.Time     `json:"created_at"`
+	UpdatedAt     time.Time     `json:"updated_at"`
+	TransactionID string        `json:"transaction_id"`
 }
